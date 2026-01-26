@@ -14,7 +14,7 @@ describe('Teste de lançamento de evento', () => {
         cy.get('.v-app-bar__nav-icon').click()
         cy.get('.majorBtn > .v-btn__content').click()
         cy.get('.MainLayoutBase_imgAppbar_v6gUn').should('exist')
-        cy.get('[data-cy="FcmSearchTextField"] input').type('t.a') 
+        cy.get('[data-cy="FcmSearchTextField"] input').type('t.a')
         cy.get('[data-cy="FcmList_SY9CCOYSz0VgertGaf7C"] > [data-fcm="30"]').click()
     });
 });
