@@ -20,5 +20,8 @@
   "homepage": "https://github.com/PedroQ-A/Testes-Volan#readme",
   "devDependencies": {
     "cypress": "^15.3.0"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.2.0"
   }
 }
