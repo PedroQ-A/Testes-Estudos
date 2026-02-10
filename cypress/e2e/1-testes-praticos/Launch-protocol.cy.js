@@ -33,7 +33,7 @@ describe('Lançamento de protocolo', () => {
         cy.get('.v-btn.ml-2 > .v-btn__content > .text-button').click()
     });
 
-it.only('Validação de protocolo criado', () => {
+it('Validação de protocolo criado', () => {
     const cpfValido = generate()
 
     cy.get('.majorBtn').click()
