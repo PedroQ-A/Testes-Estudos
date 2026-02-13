@@ -26,6 +26,6 @@
   },
   "dependencies": {
     "@faker-js/faker": "^10.2.0",
-    "cpf": "^2.0.1"
+    "gerador-validador-cpf": "^6.3.0"
   }
 }
