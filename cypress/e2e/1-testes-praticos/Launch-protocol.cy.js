@@ -44,7 +44,7 @@ describe('Lançamento de protocolo', () => {
         cy.get('.v-app-bar__nav-icon > .v-btn__content').click()
         cy.get('[href="/client/events?add=1&type=Honorario"]').click()
         cy.get('#buttonPreEvent').click({ force: true })
-        cy.get('.align-center > .v-input').type('32')
+        cy.get('.align-center > .v-input').type('55')
         cy.get(':nth-child(2) > .align-center > .v-btn').click()
         cy.wait(1000)
         cy.get('.jwCursorPointer > :nth-child(3)').click()

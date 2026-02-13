@@ -14,7 +14,7 @@ describe('Teste Login', () => {
         cy.get('.v-app-bar__nav-icon').click()
         cy.get('.v-list-item__action').click()
         cy.get('.v-list-item--link > .v-list-item__title').click()
-        cy.get('h4').should('contain', 'Bem vindo ao Volan Doutor')
+        cy.get('.MainLayoutBase_imgAppbar_v6gUn').should('exist')
     });
 
     it('Deve exibir mensagem de erro ao colocar usuario invalido', () => {
