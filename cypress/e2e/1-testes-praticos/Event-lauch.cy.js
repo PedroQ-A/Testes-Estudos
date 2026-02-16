@@ -20,6 +20,7 @@ describe('Deve lançar evento sem erro', () => {
         cy.get('.v-input__slot').type('T.A')
         cy.get('[data-cy="FcmList_SY9CCOYSz0VgertGaf7C"] > [data-fcm="30"]').click()
         cy.wait(2000)
+        cy.get('.v-app-bar__nav-icon > .v-btn__content').click()
         cy.get('[href="/client/events?add=1&type=Honorario"]').click()
         cy.get('[data-cy="txtFieldPatientCPF"]', { timeout: 15000 }).should('be.visible').type(CPF)
         cy.get('.patient-name-col > .v-input').type(nomeCompleto)
