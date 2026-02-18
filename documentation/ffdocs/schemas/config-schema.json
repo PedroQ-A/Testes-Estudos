@@ -1,0 +1,1035 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flowforge.dev/schemas/v2.0/config-schema.json",
+  "title": "FlowForge Configuration Schema v2.0",
+  "description": "Schema for FlowForge configuration files including version, environment settings, provider configurations, and context tracking",
+  "type": "object",
+  "required": ["version", "timestamp"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "description": "Configuration version number"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Configuration creation/update timestamp"
+    },
+    "flowforgeVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "FlowForge system version"
+    },
+    "environment": {
+      "$ref": "#/definitions/Environment"
+    },
+    "user": {
+      "$ref": "#/definitions/User"
+    },
+    "project": {
+      "$ref": "#/definitions/Project"
+    },
+    "git": {
+      "$ref": "#/definitions/GitConfig"
+    },
+    "session": {
+      "$ref": "#/definitions/SessionConfig"
+    },
+    "providers": {
+      "$ref": "#/definitions/ProvidersConfig"
+    },
+    "context": {
+      "$ref": "#/definitions/ContextTracking"
+    },
+    "position": {
+      "$ref": "#/definitions/PositionTracking"
+    },
+    "daemon": {
+      "$ref": "#/definitions/DaemonConfig"
+    },
+    "billing": {
+      "$ref": "#/definitions/BillingConfig"
+    },
+    "hooks": {
+      "$ref": "#/definitions/HooksConfig"
+    },
+    "notifications": {
+      "$ref": "#/definitions/NotificationsConfig"
+    },
+    "security": {
+      "$ref": "#/definitions/SecurityConfig"
+    }
+  },
+  "definitions": {
+    "Environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["development", "staging", "production"],
+          "default": "development",
+          "description": "Environment name"
+        },
+        "pwd": {
+          "type": "string",
+          "description": "Current working directory"
+        },
+        "hostname": {
+          "type": "string",
+          "description": "System hostname"
+        },
+        "platform": {
+          "type": "string",
+          "enum": ["linux", "darwin", "win32"],
+          "description": "Operating system platform"
+        },
+        "shell": {
+          "type": "string",
+          "description": "Default shell path"
+        },
+        "editor": {
+          "type": "string",
+          "description": "Default editor command"
+        },
+        "nodeVersion": {
+          "type": "string",
+          "description": "Node.js version"
+        },
+        "npmVersion": {
+          "type": "string",
+          "description": "NPM version"
+        },
+        "gitVersion": {
+          "type": "string",
+          "description": "Git version"
+        },
+        "paths": {
+          "type": "object",
+          "properties": {
+            "home": {
+              "type": "string",
+              "description": "User home directory"
+            },
+            "config": {
+              "type": "string",
+              "description": "FlowForge config directory"
+            },
+            "data": {
+              "type": "string",
+              "description": "FlowForge data directory"
+            },
+            "logs": {
+              "type": "string",
+              "description": "FlowForge logs directory"
+            },
+            "temp": {
+              "type": "string",
+              "description": "Temporary directory"
+            }
+          }
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "required": ["username"],
+      "additionalProperties": false,
+      "properties": {
+        "username": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "description": "System username"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User email address"
+        },
+        "timezone": {
+          "type": "string",
+          "description": "User timezone (IANA format)"
+        },
+        "defaultRate": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Default hourly billing rate"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "default": "USD",
+          "description": "Default currency code"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["developer", "admin", "manager"],
+          "default": "developer",
+          "description": "User role"
+        }
+      }
+    },
+    "Project": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Project name"
+        },
+        "id": {
+          "type": "string",
+          "description": "Project identifier"
+        },
+        "repository": {
+          "type": "string",
+          "description": "Git repository URL"
+        },
+        "defaultBranch": {
+          "type": "string",
+          "default": "main",
+          "description": "Default git branch"
+        },
+        "workingDirectory": {
+          "type": "string",
+          "description": "Project working directory"
+        },
+        "packageManager": {
+          "type": "string",
+          "enum": ["npm", "yarn", "pnpm"],
+          "default": "npm",
+          "description": "Package manager"
+        },
+        "buildCommand": {
+          "type": "string",
+          "description": "Build command"
+        },
+        "testCommand": {
+          "type": "string",
+          "description": "Test command"
+        },
+        "lintCommand": {
+          "type": "string",
+          "description": "Lint command"
+        },
+        "deployCommand": {
+          "type": "string",
+          "description": "Deployment command"
+        }
+      }
+    },
+    "GitConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "autoCommit": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable automatic commits"
+        },
+        "autoPush": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable automatic pushes"
+        },
+        "branchNaming": {
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "default": "feature/{issue}-{slug}",
+              "description": "Branch naming pattern"
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 20,
+              "maximum": 100,
+              "default": 50,
+              "description": "Maximum branch name length"
+            }
+          }
+        },
+        "commitMessage": {
+          "type": "object",
+          "properties": {
+            "template": {
+              "type": "string",
+              "default": "{type}({scope}): {description}",
+              "description": "Commit message template"
+            },
+            "types": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": ["feat", "fix", "docs", "style", "refactor", "test", "chore"],
+              "description": "Allowed commit types"
+            }
+          }
+        },
+        "hooks": {
+          "type": "object",
+          "properties": {
+            "preCommit": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable pre-commit hook"
+            },
+            "commitMsg": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable commit-msg hook"
+            },
+            "preReceive": {
+              "type": "boolean",
+              "default": false,
+              "description": "Enable pre-receive hook"
+            }
+          }
+        }
+      }
+    },
+    "SessionConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "autoStart": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically start sessions on work detection"
+        },
+        "autoEnd": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically end sessions on inactivity"
+        },
+        "idleThreshold": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 3600,
+          "default": 600,
+          "description": "Idle threshold in seconds"
+        },
+        "minSessionLength": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 300,
+          "default": 60,
+          "description": "Minimum session length in seconds"
+        },
+        "maxSessionLength": {
+          "type": "integer",
+          "minimum": 3600,
+          "maximum": 86400,
+          "default": 28800,
+          "description": "Maximum session length in seconds (8 hours)"
+        },
+        "reminderInterval": {
+          "type": "integer",
+          "minimum": 300,
+          "maximum": 7200,
+          "default": 1800,
+          "description": "Reminder interval in seconds (30 minutes)"
+        },
+        "backupInterval": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 600,
+          "default": 300,
+          "description": "Session backup interval in seconds"
+        }
+      }
+    },
+    "ProvidersConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["claude", "openai", "github", "linear", "jira", "slack", "discord"]
+          },
+          "uniqueItems": true,
+          "description": "Enabled providers"
+        },
+        "claude": {
+          "$ref": "#/definitions/ClaudeProvider"
+        },
+        "github": {
+          "$ref": "#/definitions/GitHubProvider"
+        },
+        "linear": {
+          "$ref": "#/definitions/LinearProvider"
+        },
+        "jira": {
+          "$ref": "#/definitions/JiraProvider"
+        },
+        "slack": {
+          "$ref": "#/definitions/SlackProvider"
+        }
+      }
+    },
+    "ClaudeProvider": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "apiKey": {
+          "type": "string",
+          "description": "Claude API key (encrypted)"
+        },
+        "model": {
+          "type": "string",
+          "enum": ["claude-3-sonnet", "claude-3-opus", "claude-3-haiku"],
+          "default": "claude-3-sonnet",
+          "description": "Default Claude model"
+        },
+        "maxTokens": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 100000,
+          "default": 4000,
+          "description": "Maximum tokens per request"
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.7,
+          "description": "Response temperature"
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 5000,
+          "maximum": 60000,
+          "default": 30000,
+          "description": "Request timeout in milliseconds"
+        }
+      }
+    },
+    "GitHubProvider": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "GitHub personal access token (encrypted)"
+        },
+        "owner": {
+          "type": "string",
+          "description": "Repository owner"
+        },
+        "repo": {
+          "type": "string",
+          "description": "Repository name"
+        },
+        "autoCreateIssues": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically create issues for tasks"
+        },
+        "autoCreatePRs": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically create pull requests"
+        },
+        "labelsSync": {
+          "type": "boolean",
+          "default": true,
+          "description": "Sync issue labels with task tags"
+        }
+      }
+    },
+    "LinearProvider": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "apiKey": {
+          "type": "string",
+          "description": "Linear API key (encrypted)"
+        },
+        "teamId": {
+          "type": "string",
+          "description": "Linear team ID"
+        },
+        "projectId": {
+          "type": "string",
+          "description": "Linear project ID"
+        },
+        "syncTasks": {
+          "type": "boolean",
+          "default": true,
+          "description": "Sync tasks with Linear issues"
+        },
+        "syncComments": {
+          "type": "boolean",
+          "default": false,
+          "description": "Sync task comments with Linear"
+        }
+      }
+    },
+    "JiraProvider": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "host": {
+          "type": "string",
+          "format": "uri",
+          "description": "Jira host URL"
+        },
+        "username": {
+          "type": "string",
+          "description": "Jira username"
+        },
+        "apiToken": {
+          "type": "string",
+          "description": "Jira API token (encrypted)"
+        },
+        "projectKey": {
+          "type": "string",
+          "description": "Jira project key"
+        },
+        "issueType": {
+          "type": "string",
+          "default": "Task",
+          "description": "Default issue type"
+        }
+      }
+    },
+    "SlackProvider": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "botToken": {
+          "type": "string",
+          "description": "Slack bot token (encrypted)"
+        },
+        "channel": {
+          "type": "string",
+          "description": "Default notification channel"
+        },
+        "notifications": {
+          "type": "object",
+          "properties": {
+            "sessionStart": {
+              "type": "boolean",
+              "default": false
+            },
+            "sessionEnd": {
+              "type": "boolean",
+              "default": false
+            },
+            "taskComplete": {
+              "type": "boolean",
+              "default": true
+            },
+            "milestoneComplete": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    },
+    "ContextTracking": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "issue": {
+          "type": "string",
+          "description": "Current GitHub issue number"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Current git branch"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Files currently being worked on"
+        },
+        "last_action": {
+          "type": "string",
+          "description": "Last recorded action"
+        },
+        "git_diff": {
+          "type": "string",
+          "description": "Current git diff summary"
+        },
+        "git_status": {
+          "type": "string",
+          "description": "Current git status summary"
+        },
+        "commands_run": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of commands run in session"
+        }
+      }
+    },
+    "PositionTracking": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "currentTask": {
+          "type": "string",
+          "description": "Current task identifier"
+        },
+        "currentFile": {
+          "type": "string",
+          "description": "Current file being edited"
+        },
+        "lineNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Current line number"
+        },
+        "columnNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Current column number"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last modification timestamp"
+        },
+        "workingSet": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Set of files in current working context"
+        }
+      }
+    },
+    "DaemonConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable daemon monitoring"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 65535,
+          "default": 3001,
+          "description": "Daemon port"
+        },
+        "host": {
+          "type": "string",
+          "default": "localhost",
+          "description": "Daemon host"
+        },
+        "logLevel": {
+          "type": "string",
+          "enum": ["error", "warn", "info", "debug"],
+          "default": "info",
+          "description": "Logging level"
+        },
+        "pidFile": {
+          "type": "string",
+          "description": "PID file location"
+        },
+        "logFile": {
+          "type": "string",
+          "description": "Log file location"
+        },
+        "monitoringInterval": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 300,
+          "default": 30,
+          "description": "Monitoring interval in seconds"
+        },
+        "healthCheck": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "interval": {
+              "type": "integer",
+              "minimum": 60,
+              "maximum": 3600,
+              "default": 300
+            },
+            "timeout": {
+              "type": "integer",
+              "minimum": 1000,
+              "maximum": 10000,
+              "default": 5000
+            }
+          }
+        }
+      }
+    },
+    "BillingConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable billing features"
+        },
+        "defaultBillable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Default billable status for new sessions"
+        },
+        "roundingMethod": {
+          "type": "string",
+          "enum": ["none", "up", "down", "nearest"],
+          "default": "nearest",
+          "description": "Time rounding method"
+        },
+        "roundingIncrement": {
+          "type": "integer",
+          "enum": [1, 5, 10, 15, 30],
+          "default": 15,
+          "description": "Rounding increment in minutes"
+        },
+        "minimumBillableTime": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60,
+          "default": 15,
+          "description": "Minimum billable time in minutes"
+        },
+        "invoicing": {
+          "type": "object",
+          "properties": {
+            "autoGenerate": {
+              "type": "boolean",
+              "default": false
+            },
+            "frequency": {
+              "type": "string",
+              "enum": ["weekly", "bi-weekly", "monthly"],
+              "default": "monthly"
+            },
+            "dueAfterDays": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 90,
+              "default": 30
+            }
+          }
+        }
+      }
+    },
+    "HooksConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable git hooks"
+        },
+        "preCommit": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "linting": {
+              "type": "boolean",
+              "default": true
+            },
+            "testing": {
+              "type": "boolean",
+              "default": false
+            },
+            "timeTracking": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "postCommit": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "timeTracking": {
+              "type": "boolean",
+              "default": true
+            },
+            "notifications": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "preReceive": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "branchProtection": {
+              "type": "boolean",
+              "default": true
+            },
+            "commitValidation": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    },
+    "NotificationsConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable notifications"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["desktop", "email", "slack", "webhook"]
+          },
+          "default": ["desktop"],
+          "description": "Enabled notification channels"
+        },
+        "events": {
+          "type": "object",
+          "properties": {
+            "sessionStart": {
+              "type": "boolean",
+              "default": false
+            },
+            "sessionEnd": {
+              "type": "boolean",
+              "default": true
+            },
+            "sessionIdle": {
+              "type": "boolean",
+              "default": true
+            },
+            "taskComplete": {
+              "type": "boolean",
+              "default": true
+            },
+            "milestoneComplete": {
+              "type": "boolean",
+              "default": true
+            },
+            "errorOccurred": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "email": {
+          "type": "object",
+          "properties": {
+            "smtp": {
+              "type": "object",
+              "properties": {
+                "host": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65535
+                },
+                "secure": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "SMTP password (encrypted)"
+                }
+              }
+            },
+            "from": {
+              "type": "string",
+              "format": "email"
+            },
+            "to": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        }
+      }
+    },
+    "SecurityConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "encryptionEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable data encryption"
+        },
+        "encryptionAlgorithm": {
+          "type": "string",
+          "enum": ["aes-256-gcm", "aes-256-cbc"],
+          "default": "aes-256-gcm",
+          "description": "Encryption algorithm"
+        },
+        "keyDerivation": {
+          "type": "string",
+          "enum": ["pbkdf2", "scrypt", "argon2"],
+          "default": "pbkdf2",
+          "description": "Key derivation method"
+        },
+        "saltLength": {
+          "type": "integer",
+          "minimum": 16,
+          "maximum": 64,
+          "default": 32,
+          "description": "Salt length in bytes"
+        },
+        "iterations": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 1000000,
+          "default": 100000,
+          "description": "Key derivation iterations"
+        },
+        "tokenExpiration": {
+          "type": "integer",
+          "minimum": 3600,
+          "maximum": 2592000,
+          "default": 86400,
+          "description": "API token expiration in seconds"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "version": "1.0",
+      "timestamp": "2025-09-06T14:04:48Z",
+      "flowforgeVersion": "2.0.0",
+      "environment": {
+        "name": "development",
+        "pwd": "/home/cruzalex/projects/dev/cruzalex/flowforge/FlowForge",
+        "hostname": "CruzAlexAI",
+        "platform": "linux",
+        "shell": "/usr/bin/zsh",
+        "editor": "code",
+        "nodeVersion": "18.19.0",
+        "gitVersion": "2.43.0",
+        "paths": {
+          "home": "/home/cruzalex",
+          "config": "/home/cruzalex/.flowforge",
+          "data": "/home/cruzalex/.flowforge/data",
+          "logs": "/home/cruzalex/.flowforge/logs",
+          "temp": "/tmp/flowforge"
+        }
+      },
+      "user": {
+        "username": "cruzalex",
+        "displayName": "Cruz Alex",
+        "email": "****@****.com",
+        "timezone": "America/New_York",
+        "defaultRate": 85.0,
+        "currency": "USD",
+        "role": "developer"
+      },
+      "project": {
+        "name": "FlowForge",
+        "id": "flowforge-core",
+        "repository": "https://github.com/JustCode-CruzAlex/FlowForge",
+        "defaultBranch": "main",
+        "workingDirectory": "/home/cruzalex/projects/dev/cruzalex/flowforge/FlowForge",
+        "packageManager": "npm",
+        "testCommand": "npm test",
+        "lintCommand": "npm run lint"
+      },
+      "session": {
+        "autoStart": false,
+        "autoEnd": true,
+        "idleThreshold": 600,
+        "minSessionLength": 60,
+        "maxSessionLength": 28800,
+        "reminderInterval": 1800,
+        "backupInterval": 300
+      },
+      "providers": {
+        "enabled": ["github"],
+        "github": {
+          "token": "encrypted_token",
+          "owner": "JustCode-CruzAlex",
+          "repo": "FlowForge",
+          "autoCreateIssues": false,
+          "autoCreatePRs": false,
+          "labelsSync": true
+        }
+      },
+      "context": {
+        "issue": "250",
+        "branch": "feature/250-work",
+        "files": [],
+        "last_action": "Started work session",
+        "git_diff": "",
+        "git_status": " M .flowforge/.config/current-position.json| M .flowforge/.current-session| M .flowforge/sessions/current.json|",
+        "commands_run": 0
+      },
+      "daemon": {
+        "enabled": true,
+        "port": 3001,
+        "host": "localhost",
+        "logLevel": "info",
+        "monitoringInterval": 30,
+        "healthCheck": {
+          "enabled": true,
+          "interval": 300,
+          "timeout": 5000
+        }
+      },
+      "billing": {
+        "enabled": true,
+        "defaultBillable": true,
+        "roundingMethod": "nearest",
+        "roundingIncrement": 15,
+        "minimumBillableTime": 15,
+        "invoicing": {
+          "autoGenerate": false,
+          "frequency": "monthly",
+          "dueAfterDays": 30
+        }
+      },
+      "security": {
+        "encryptionEnabled": true,
+        "encryptionAlgorithm": "aes-256-gcm",
+        "keyDerivation": "pbkdf2",
+        "saltLength": 32,
+        "iterations": 100000,
+        "tokenExpiration": 86400
+      }
+    }
+  ]
+}

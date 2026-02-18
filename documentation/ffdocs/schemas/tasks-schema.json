@@ -1,0 +1,531 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flowforge.dev/schemas/v2.0/tasks-schema.json",
+  "title": "FlowForge Tasks Schema v2.0",
+  "description": "Complete schema for FlowForge tasks.json file structure including tasks, milestones, and time tracking sessions",
+  "type": "object",
+  "required": ["tasks", "milestones", "lastUpdated", "version"],
+  "additionalProperties": false,
+  "properties": {
+    "tasks": {
+      "type": "array",
+      "description": "Array of all tasks in the project",
+      "items": {
+        "$ref": "#/definitions/Task"
+      }
+    },
+    "milestones": {
+      "type": "array",
+      "description": "Array of project milestones with grouped tasks",
+      "items": {
+        "$ref": "#/definitions/Milestone"
+      }
+    },
+    "timeSessions": {
+      "type": "object",
+      "description": "Time tracking sessions by task ID",
+      "patternProperties": {
+        "^[0-9]+$": {
+          "$ref": "#/definitions/TimeSession"
+        }
+      },
+      "additionalProperties": false
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last modification"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "FlowForge version that created this file"
+    },
+    "metadata": {
+      "$ref": "#/definitions/Metadata"
+    }
+  },
+  "definitions": {
+    "Task": {
+      "type": "object",
+      "required": ["id", "title", "status", "createdAt"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Unique task identifier"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Task title or summary"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Detailed task description"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "blocked", "completed", "cancelled"],
+          "description": "Current task status"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"],
+          "default": "medium",
+          "description": "Task priority level"
+        },
+        "assignee": {
+          "type": "string",
+          "description": "GitHub username of assigned developer"
+        },
+        "estimatedHours": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "Estimated hours to complete"
+        },
+        "actualHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Actual hours tracked"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "uniqueItems": true,
+          "description": "Task categorization tags"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "uniqueItems": true,
+          "description": "Array of task IDs that must complete before this task"
+        },
+        "microtasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Microtask"
+          },
+          "description": "Sub-tasks within this task"
+        },
+        "source": {
+          "type": "string",
+          "enum": ["github-issue", "migrated-from-md", "manual", "generated"],
+          "description": "How this task was created"
+        },
+        "githubIssue": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Associated GitHub issue number"
+        },
+        "milestoneId": {
+          "type": "string",
+          "description": "ID of milestone this task belongs to"
+        },
+        "branch": {
+          "type": "string",
+          "pattern": "^feature/[0-9]+-[a-z0-9-]+$|^hotfix/[0-9]+-[a-z0-9-]+$",
+          "description": "Git branch associated with this task"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Task creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last modification timestamp"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Task completion timestamp"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Task deadline"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Note"
+          },
+          "description": "Developer notes and updates"
+        },
+        "billing": {
+          "$ref": "#/definitions/BillingInfo"
+        }
+      }
+    },
+    "Microtask": {
+      "type": "object",
+      "required": ["id", "title", "completed"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]+-[0-9]+$",
+          "description": "Microtask ID in format taskId-microtaskId"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Microtask title"
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Whether microtask is completed"
+        },
+        "estimatedMinutes": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 480,
+          "description": "Estimated minutes to complete"
+        },
+        "actualMinutes": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Actual minutes tracked"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Completion timestamp"
+        }
+      }
+    },
+    "Milestone": {
+      "type": "object",
+      "required": ["id", "title", "version", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "Milestone version identifier"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Milestone title"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Milestone description and goals"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "Semantic version number"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["planning", "in_progress", "completed", "cancelled"],
+          "description": "Milestone status"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"],
+          "default": "medium",
+          "description": "Milestone priority"
+        },
+        "taskIds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "uniqueItems": true,
+          "description": "Array of task IDs in this milestone"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Milestone start date"
+        },
+        "targetDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Target completion date"
+        },
+        "completedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Actual completion date"
+        },
+        "estimatedHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total estimated hours for all tasks"
+        },
+        "actualHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total actual hours tracked"
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Completion percentage"
+        }
+      }
+    },
+    "TimeSession": {
+      "type": "object",
+      "required": ["sessionId", "startTime", "taskId"],
+      "additionalProperties": false,
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "pattern": "^session-[0-9]+-[0-9]+$",
+          "description": "Unique session identifier"
+        },
+        "taskId": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Associated task ID"
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Session start timestamp"
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Session end timestamp"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Session duration in seconds"
+        },
+        "user": {
+          "type": "string",
+          "description": "Username who worked on this session"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Git branch during this session"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Work description for this session"
+        },
+        "billable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this session is billable"
+        },
+        "rate": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Hourly rate for billing calculations"
+        }
+      }
+    },
+    "Note": {
+      "type": "object",
+      "required": ["id", "content", "createdAt", "author"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^note-[0-9]+$",
+          "description": "Unique note identifier"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "description": "Note content"
+        },
+        "author": {
+          "type": "string",
+          "description": "Note author username"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Note creation timestamp"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["update", "blocked", "completed", "question", "decision"],
+          "default": "update",
+          "description": "Type of note"
+        }
+      }
+    },
+    "BillingInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "billable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this task is billable"
+        },
+        "rate": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Hourly rate for this task"
+        },
+        "client": {
+          "type": "string",
+          "description": "Client or project identifier"
+        },
+        "invoiced": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether time has been invoiced"
+        },
+        "invoiceId": {
+          "type": "string",
+          "description": "Associated invoice identifier"
+        }
+      }
+    },
+    "Metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project": {
+          "type": "string",
+          "description": "Project name"
+        },
+        "repository": {
+          "type": "string",
+          "description": "Git repository URL"
+        },
+        "owner": {
+          "type": "string",
+          "description": "Project owner"
+        },
+        "team": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Team member usernames"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "File creation timestamp"
+        },
+        "generator": {
+          "type": "string",
+          "description": "Tool that generated this file"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "tasks": [
+        {
+          "id": 1,
+          "title": "Complete migration script",
+          "description": "Migrate all .md task files to JSON format",
+          "status": "completed",
+          "priority": "high",
+          "assignee": "cruzalex",
+          "estimatedHours": 4,
+          "actualHours": 3.5,
+          "tags": ["migration", "v2.0"],
+          "dependencies": [],
+          "microtasks": [
+            {
+              "id": "1-1",
+              "title": "Create migration script",
+              "completed": true,
+              "estimatedMinutes": 120,
+              "actualMinutes": 90,
+              "completedAt": "2025-09-06T10:30:00.000Z"
+            }
+          ],
+          "source": "github-issue",
+          "githubIssue": 244,
+          "milestoneId": "v2.0.0",
+          "branch": "feature/244-migration",
+          "createdAt": "2025-09-06T10:44:59.677Z",
+          "updatedAt": "2025-09-06T14:00:00.000Z",
+          "completedAt": "2025-09-06T14:00:00.000Z",
+          "notes": [
+            {
+              "id": "note-1",
+              "content": "Migration completed successfully",
+              "author": "cruzalex",
+              "createdAt": "2025-09-06T14:00:00.000Z",
+              "type": "completed"
+            }
+          ],
+          "billing": {
+            "billable": true,
+            "rate": 85.0,
+            "client": "FlowForge",
+            "invoiced": false
+          }
+        }
+      ],
+      "milestones": [
+        {
+          "id": "v2.0.0",
+          "title": "FlowForge v2.0 Launch",
+          "description": "Complete migration to v2.0 architecture",
+          "version": "2.0.0",
+          "status": "in_progress",
+          "priority": "critical",
+          "taskIds": [1, 2, 3],
+          "startDate": "2025-09-01T00:00:00.000Z",
+          "targetDate": "2025-09-15T00:00:00.000Z",
+          "estimatedHours": 120,
+          "actualHours": 45,
+          "progress": 37.5
+        }
+      ],
+      "timeSessions": {
+        "1": {
+          "sessionId": "session-1757167488-140545",
+          "taskId": 1,
+          "startTime": "2025-09-06T10:00:00.000Z",
+          "endTime": "2025-09-06T14:00:00.000Z",
+          "duration": 14400,
+          "user": "cruzalex",
+          "branch": "feature/244-migration",
+          "description": "Completed migration script development",
+          "billable": true,
+          "rate": 85.0
+        }
+      },
+      "lastUpdated": "2025-09-06T14:04:48.251Z",
+      "version": "2.0.0",
+      "metadata": {
+        "project": "FlowForge",
+        "repository": "https://github.com/JustCode-CruzAlex/FlowForge",
+        "owner": "cruzalex",
+        "team": ["cruzalex"],
+        "created": "2025-09-06T10:44:59.677Z",
+        "generator": "FlowForge v2.0.0"
+      }
+    }
+  ]
+}

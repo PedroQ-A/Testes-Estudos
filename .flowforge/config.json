@@ -1,0 +1,46 @@
+{
+  "version": "2.0.0",
+  "project": {
+    "name": "Testes-Estudos",
+    "type": "node",
+    "created": "2026-02-18T13:24:56Z",
+    "integrationMode": "standard"
+  },
+  "enforcement": {
+    "level": "gradual",
+    "startDate": "2026-02-18T13:24:56Z",
+    "transitionDate": "2026-03-20T13:24:56Z",
+    "currentPhase": "initial"
+  },
+  "rules": {
+    "enforceTests": true,
+    "requireIssues": true,
+    "documentationRequired": true,
+    "gitFlow": true,
+    "noAIReferences": true
+  },
+  "automation": {
+    "preCommitChecks": true,
+    "autoFormat": true,
+    "updateDocs": true,
+    "timeTracking": true,
+    "completionDetection": true,
+    "smartAggregation": true
+  },
+  "standards": {
+    "testCoverage": 80,
+    "maxFileLength": 500,
+    "commitFormat": "conventional"
+  },
+  "providers": {
+    "active": "json",
+    "available": ["json", "github", "notion"]
+  },
+  "v2Features": {
+    "userIsolation": true,
+    "taskMigration": true,
+    "completionDetection": true,
+    "smartAggregation": true,
+    "providerBridge": true
+  }
+}

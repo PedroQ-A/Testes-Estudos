@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-02-18T09:25:25-04:00",
+  "totalAgents": 15,
+  "installed": 15,
+  "pending": 0,
+  "agents": [
+    "fft-testing",
+    "fft-documentation",
+    "fft-project-manager",
+    "fft-database",
+    "fft-architecture",
+    "fft-api-designer",
+    "fft-code-reviewer",
+    "fft-devops-agent",
+    "fft-frontend",
+    "fft-github",
+    "fft-performance",
+    "fft-security",
+    "fft-backend",
+    "fft-agent-creator",
+    "fft-mobile"
+  ]
+}

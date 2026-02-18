@@ -1,0 +1,919 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flowforge.dev/schemas/v2.0/user-data-schema.json",
+  "title": "FlowForge User Data Schema v2.0",
+  "description": "Schema for FlowForge user-specific data files including time tracking, billing aggregation, and privacy-protected information",
+  "type": "object",
+  "required": ["userId", "version", "lastUpdated"],
+  "additionalProperties": false,
+  "properties": {
+    "userId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "description": "Unique user identifier (username)"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "FlowForge version that created this file"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last modification timestamp"
+    },
+    "profile": {
+      "$ref": "#/definitions/UserProfile"
+    },
+    "timeTracking": {
+      "$ref": "#/definitions/TimeTracking"
+    },
+    "billing": {
+      "$ref": "#/definitions/BillingData"
+    },
+    "preferences": {
+      "$ref": "#/definitions/UserPreferences"
+    },
+    "statistics": {
+      "$ref": "#/definitions/UserStatistics"
+    },
+    "privacy": {
+      "$ref": "#/definitions/PrivacySettings"
+    }
+  },
+  "definitions": {
+    "UserProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "User's display name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address (privacy protected)"
+        },
+        "timezone": {
+          "type": "string",
+          "description": "User's timezone (IANA format)"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["developer", "admin", "manager", "client"],
+          "default": "developer",
+          "description": "User role in the system"
+        },
+        "team": {
+          "type": "string",
+          "description": "Team or organization name"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Date user started using FlowForge"
+        },
+        "active": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether user is currently active"
+        }
+      }
+    },
+    "TimeTracking": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "totalHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total hours tracked across all projects"
+        },
+        "billableHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total billable hours"
+        },
+        "nonBillableHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total non-billable hours"
+        },
+        "dailyTargetHours": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 24,
+          "default": 8,
+          "description": "Target hours per day"
+        },
+        "weeklyTargetHours": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 168,
+          "default": 40,
+          "description": "Target hours per week"
+        },
+        "sessions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserSession"
+          },
+          "description": "User's work sessions"
+        },
+        "dailySummaries": {
+          "type": "object",
+          "patternProperties": {
+            "^[0-9]{4}-[0-9]{2}-[0-9]{2}$": {
+              "$ref": "#/definitions/DailySummary"
+            }
+          },
+          "description": "Daily time summaries by date"
+        },
+        "weeklySummaries": {
+          "type": "object",
+          "patternProperties": {
+            "^[0-9]{4}-W[0-9]{2}$": {
+              "$ref": "#/definitions/WeeklySummary"
+            }
+          },
+          "description": "Weekly time summaries by week number"
+        },
+        "monthlySummaries": {
+          "type": "object",
+          "patternProperties": {
+            "^[0-9]{4}-[0-9]{2}$": {
+              "$ref": "#/definitions/MonthlySummary"
+            }
+          },
+          "description": "Monthly time summaries by month"
+        }
+      }
+    },
+    "UserSession": {
+      "type": "object",
+      "required": ["sessionId", "taskId", "startTime", "duration"],
+      "additionalProperties": false,
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "pattern": "^session-[0-9]+-[0-9]+$",
+          "description": "Unique session identifier"
+        },
+        "taskId": {
+          "type": "string",
+          "description": "Associated task or issue ID"
+        },
+        "projectId": {
+          "type": "string",
+          "description": "Project identifier"
+        },
+        "clientId": {
+          "type": "string",
+          "description": "Client identifier"
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Session start timestamp"
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Session end timestamp"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Session duration in seconds"
+        },
+        "billable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether session is billable"
+        },
+        "rate": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Hourly rate for this session"
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Calculated billing amount"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["development", "testing", "documentation", "meeting", "research", "maintenance", "support"],
+          "description": "Work category"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Session work description"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "uniqueItems": true,
+          "description": "Session tags"
+        },
+        "invoiced": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether session has been invoiced"
+        },
+        "invoiceId": {
+          "type": "string",
+          "description": "Associated invoice ID"
+        },
+        "approved": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether session is approved for billing"
+        },
+        "productivity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Session productivity score"
+        }
+      }
+    },
+    "DailySummary": {
+      "type": "object",
+      "required": ["date", "totalHours"],
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Summary date"
+        },
+        "totalHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total hours worked"
+        },
+        "billableHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Billable hours worked"
+        },
+        "nonBillableHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Non-billable hours worked"
+        },
+        "sessionCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of work sessions"
+        },
+        "projectBreakdown": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "description": "Hours by project"
+        },
+        "categoryBreakdown": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "description": "Hours by category"
+        },
+        "averageProductivity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Average productivity for the day"
+        },
+        "revenue": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total revenue generated"
+        }
+      }
+    },
+    "WeeklySummary": {
+      "type": "object",
+      "required": ["week", "year", "totalHours"],
+      "additionalProperties": false,
+      "properties": {
+        "week": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 53,
+          "description": "Week number"
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 2020,
+          "description": "Year"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Week start date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Week end date"
+        },
+        "totalHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total hours worked"
+        },
+        "billableHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Billable hours worked"
+        },
+        "nonBillableHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Non-billable hours worked"
+        },
+        "targetHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Target hours for this week"
+        },
+        "targetAchievement": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Percentage of target achieved"
+        },
+        "workingDays": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7,
+          "description": "Number of working days"
+        },
+        "averageHoursPerDay": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Average hours per working day"
+        },
+        "projectBreakdown": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "description": "Hours by project"
+        },
+        "categoryBreakdown": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "description": "Hours by category"
+        },
+        "averageProductivity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Average productivity for the week"
+        },
+        "revenue": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total revenue generated"
+        }
+      }
+    },
+    "MonthlySummary": {
+      "type": "object",
+      "required": ["month", "year", "totalHours"],
+      "additionalProperties": false,
+      "properties": {
+        "month": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Month number"
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 2020,
+          "description": "Year"
+        },
+        "totalHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total hours worked"
+        },
+        "billableHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Billable hours worked"
+        },
+        "nonBillableHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Non-billable hours worked"
+        },
+        "workingDays": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 31,
+          "description": "Number of working days"
+        },
+        "averageHoursPerDay": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Average hours per working day"
+        },
+        "projectBreakdown": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "description": "Hours by project"
+        },
+        "categoryBreakdown": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "description": "Hours by category"
+        },
+        "clientBreakdown": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "description": "Hours by client"
+        },
+        "averageProductivity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Average productivity for the month"
+        },
+        "revenue": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total revenue generated"
+        },
+        "invoicedAmount": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Amount already invoiced"
+        },
+        "pendingAmount": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Amount pending invoicing"
+        }
+      }
+    },
+    "BillingData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "defaultRate": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Default hourly rate"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "default": "USD",
+          "description": "Default currency (ISO 4217)"
+        },
+        "rates": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "description": "Rates by project or client"
+        },
+        "totalEarnings": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total lifetime earnings"
+        },
+        "totalInvoiced": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total amount invoiced"
+        },
+        "totalPending": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total amount pending invoicing"
+        },
+        "invoices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Invoice"
+          },
+          "description": "Invoice records"
+        },
+        "paymentMethods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PaymentMethod"
+          },
+          "description": "Available payment methods"
+        }
+      }
+    },
+    "Invoice": {
+      "type": "object",
+      "required": ["id", "date", "amount", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique invoice identifier"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Invoice date"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Invoice due date"
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Invoice amount"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "Invoice currency"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "sent", "paid", "overdue", "cancelled"],
+          "description": "Invoice status"
+        },
+        "client": {
+          "type": "string",
+          "description": "Client identifier"
+        },
+        "project": {
+          "type": "string",
+          "description": "Project identifier"
+        },
+        "sessionIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Session IDs included in this invoice"
+        },
+        "paidDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Date invoice was paid"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Payment method used"
+        }
+      }
+    },
+    "PaymentMethod": {
+      "type": "object",
+      "required": ["id", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Payment method identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["bank_transfer", "paypal", "stripe", "check", "crypto"],
+          "description": "Payment method type"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for payment method"
+        },
+        "active": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether payment method is active"
+        },
+        "details": {
+          "type": "object",
+          "description": "Payment method specific details (encrypted)"
+        }
+      }
+    },
+    "UserPreferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timeFormat": {
+          "type": "string",
+          "enum": ["12h", "24h"],
+          "default": "24h",
+          "description": "Preferred time format"
+        },
+        "dateFormat": {
+          "type": "string",
+          "enum": ["MM/DD/YYYY", "DD/MM/YYYY", "YYYY-MM-DD"],
+          "default": "YYYY-MM-DD",
+          "description": "Preferred date format"
+        },
+        "weekStart": {
+          "type": "string",
+          "enum": ["monday", "sunday"],
+          "default": "monday",
+          "description": "Week start day"
+        },
+        "notifications": {
+          "type": "object",
+          "properties": {
+            "sessionReminders": {
+              "type": "boolean",
+              "default": true
+            },
+            "dailyReports": {
+              "type": "boolean",
+              "default": false
+            },
+            "weeklyReports": {
+              "type": "boolean",
+              "default": true
+            },
+            "invoiceAlerts": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "dashboard": {
+          "type": "object",
+          "properties": {
+            "defaultView": {
+              "type": "string",
+              "enum": ["today", "week", "month"],
+              "default": "today"
+            },
+            "showProductivity": {
+              "type": "boolean",
+              "default": true
+            },
+            "showEarnings": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "privacy": {
+          "type": "object",
+          "properties": {
+            "shareStatistics": {
+              "type": "boolean",
+              "default": false
+            },
+            "allowAnalytics": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    },
+    "UserStatistics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "totalSessions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of work sessions"
+        },
+        "averageSessionLength": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Average session length in hours"
+        },
+        "longestSession": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Longest session in hours"
+        },
+        "shortestSession": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Shortest session in hours"
+        },
+        "averageProductivity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Overall average productivity score"
+        },
+        "streakDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current streak of consecutive working days"
+        },
+        "longestStreak": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Longest streak ever achieved"
+        },
+        "favoriteWorkingHour": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 23,
+          "description": "Hour of day with most activity"
+        },
+        "mostProductiveDay": {
+          "type": "string",
+          "enum": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+          "description": "Most productive day of week"
+        },
+        "projectCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of projects worked on"
+        },
+        "clientCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of clients worked for"
+        }
+      }
+    },
+    "PrivacySettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dataRetentionDays": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 3650,
+          "default": 365,
+          "description": "How long to retain detailed session data"
+        },
+        "anonymizeOldData": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to anonymize old session data"
+        },
+        "encryptSensitiveData": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to encrypt sensitive information"
+        },
+        "allowDataExport": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether user can export their data"
+        },
+        "allowDataDeletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether user can delete their data"
+        },
+        "consentVersion": {
+          "type": "string",
+          "description": "Version of privacy policy consented to"
+        },
+        "consentDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date of consent"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "userId": "cruzalex",
+      "version": "2.0.0",
+      "lastUpdated": "2025-09-06T14:30:00.000Z",
+      "profile": {
+        "displayName": "Cruz Alex",
+        "email": "****@****.com",
+        "timezone": "America/New_York",
+        "role": "developer",
+        "team": "FlowForge Core",
+        "startDate": "2025-01-01",
+        "active": true
+      },
+      "timeTracking": {
+        "totalHours": 245.5,
+        "billableHours": 230.0,
+        "nonBillableHours": 15.5,
+        "dailyTargetHours": 8,
+        "weeklyTargetHours": 40,
+        "dailySummaries": {
+          "2025-09-06": {
+            "date": "2025-09-06",
+            "totalHours": 6.5,
+            "billableHours": 6.0,
+            "nonBillableHours": 0.5,
+            "sessionCount": 2,
+            "projectBreakdown": {
+              "FlowForge": 6.0,
+              "Documentation": 0.5
+            },
+            "categoryBreakdown": {
+              "development": 5.0,
+              "documentation": 1.5
+            },
+            "averageProductivity": 87.5,
+            "revenue": 510.0
+          }
+        }
+      },
+      "billing": {
+        "defaultRate": 85.0,
+        "currency": "USD",
+        "rates": {
+          "FlowForge": 85.0,
+          "Client-B": 95.0
+        },
+        "totalEarnings": 20825.0,
+        "totalInvoiced": 18500.0,
+        "totalPending": 2325.0
+      },
+      "preferences": {
+        "timeFormat": "24h",
+        "dateFormat": "YYYY-MM-DD",
+        "weekStart": "monday",
+        "notifications": {
+          "sessionReminders": true,
+          "dailyReports": false,
+          "weeklyReports": true,
+          "invoiceAlerts": true
+        },
+        "dashboard": {
+          "defaultView": "today",
+          "showProductivity": true,
+          "showEarnings": true
+        }
+      },
+      "statistics": {
+        "totalSessions": 234,
+        "averageSessionLength": 1.75,
+        "longestSession": 8.5,
+        "shortestSession": 0.25,
+        "averageProductivity": 82.3,
+        "streakDays": 12,
+        "longestStreak": 28,
+        "favoriteWorkingHour": 10,
+        "mostProductiveDay": "tuesday",
+        "projectCount": 3,
+        "clientCount": 2
+      },
+      "privacy": {
+        "dataRetentionDays": 365,
+        "anonymizeOldData": false,
+        "encryptSensitiveData": true,
+        "allowDataExport": true,
+        "allowDataDeletion": true,
+        "consentVersion": "1.0",
+        "consentDate": "2025-01-01T00:00:00.000Z"
+      }
+    }
+  ]
+}

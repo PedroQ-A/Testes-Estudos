@@ -1,0 +1,553 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flowforge.dev/schemas/v2.0/sessions-schema.json",
+  "title": "FlowForge Sessions Schema v2.0",
+  "description": "Schema for FlowForge sessions/current.json file structure including session tracking, daemon configuration, and billing data",
+  "type": "object",
+  "required": ["sessionId", "taskId", "startTime", "user"],
+  "additionalProperties": false,
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "pattern": "^session-[0-9]+-[0-9]+$",
+      "description": "Unique session identifier in format session-{timestamp}-{random}"
+    },
+    "taskId": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "Associated GitHub issue or task ID"
+    },
+    "taskTitle": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Human-readable task title"
+    },
+    "taskStatus": {
+      "type": "string",
+      "enum": ["open", "in_progress", "blocked", "completed", "cancelled"],
+      "description": "Current status of the associated task"
+    },
+    "user": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "description": "Username of the developer working on this session"
+    },
+    "branch": {
+      "type": "string",
+      "description": "Git branch being used for this session"
+    },
+    "startTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Session start timestamp in ISO 8601 format"
+    },
+    "endTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Session end timestamp in ISO 8601 format"
+    },
+    "lastActivity": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last detected activity"
+    },
+    "duration": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Session duration in seconds (calculated when session ends)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "paused", "ended", "abandoned"],
+      "default": "active",
+      "description": "Current session status"
+    },
+    "detectionSource": {
+      "type": "string",
+      "enum": ["manual", "git-hook", "daemon", "claude-code", "automatic"],
+      "description": "How this session was detected/started"
+    },
+    "workDescription": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Brief description of work performed in this session"
+    },
+    "filesModified": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "List of files modified during this session"
+    },
+    "commits": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CommitInfo"
+      },
+      "description": "Commits made during this session"
+    },
+    "billing": {
+      "$ref": "#/definitions/BillingInfo"
+    },
+    "daemon": {
+      "$ref": "#/definitions/DaemonConfig"
+    },
+    "environment": {
+      "$ref": "#/definitions/Environment"
+    },
+    "metrics": {
+      "$ref": "#/definitions/SessionMetrics"
+    },
+    "interruptions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Interruption"
+      },
+      "description": "Tracked interruptions during the session"
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SessionNote"
+      },
+      "description": "Developer notes added during the session"
+    }
+  },
+  "definitions": {
+    "CommitInfo": {
+      "type": "object",
+      "required": ["hash", "message", "timestamp"],
+      "additionalProperties": false,
+      "properties": {
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{7,40}$",
+          "description": "Git commit hash"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "Git commit message"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Commit timestamp"
+        },
+        "author": {
+          "type": "string",
+          "description": "Commit author"
+        },
+        "filesChanged": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of files changed in this commit"
+        },
+        "linesAdded": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Lines added in this commit"
+        },
+        "linesRemoved": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Lines removed in this commit"
+        }
+      }
+    },
+    "BillingInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "billable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this session is billable"
+        },
+        "rate": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Hourly rate for billing calculations"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "default": "USD",
+          "description": "Currency code (ISO 4217)"
+        },
+        "client": {
+          "type": "string",
+          "description": "Client or project identifier"
+        },
+        "project": {
+          "type": "string",
+          "description": "Project code for billing"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["development", "testing", "documentation", "meeting", "research", "maintenance"],
+          "description": "Work category for billing"
+        },
+        "invoiced": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this session has been invoiced"
+        },
+        "invoiceId": {
+          "type": "string",
+          "description": "Associated invoice identifier"
+        },
+        "approved": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether session has been approved for billing"
+        },
+        "approvedBy": {
+          "type": "string",
+          "description": "Username who approved the session"
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when session was approved"
+        }
+      }
+    },
+    "DaemonConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether daemon monitoring is enabled"
+        },
+        "processId": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Daemon process ID"
+        },
+        "monitoringInterval": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300,
+          "default": 30,
+          "description": "Monitoring interval in seconds"
+        },
+        "idleThreshold": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 3600,
+          "default": 600,
+          "description": "Idle threshold in seconds before pause"
+        },
+        "autoSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to auto-save session data"
+        },
+        "autoSaveInterval": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 600,
+          "default": 120,
+          "description": "Auto-save interval in seconds"
+        },
+        "activitySources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["keyboard", "mouse", "git", "file-system", "claude-code"]
+          },
+          "uniqueItems": true,
+          "default": ["keyboard", "mouse", "git", "file-system"],
+          "description": "Sources to monitor for activity"
+        },
+        "lastHeartbeat": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last daemon heartbeat timestamp"
+        }
+      }
+    },
+    "Environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pwd": {
+          "type": "string",
+          "description": "Working directory when session started"
+        },
+        "hostname": {
+          "type": "string",
+          "description": "System hostname"
+        },
+        "os": {
+          "type": "string",
+          "description": "Operating system"
+        },
+        "shell": {
+          "type": "string",
+          "description": "Shell being used"
+        },
+        "editor": {
+          "type": "string",
+          "description": "Primary editor or IDE"
+        },
+        "nodeVersion": {
+          "type": "string",
+          "description": "Node.js version"
+        },
+        "gitVersion": {
+          "type": "string",
+          "description": "Git version"
+        },
+        "flowforgeVersion": {
+          "type": "string",
+          "description": "FlowForge version"
+        },
+        "terminalSize": {
+          "type": "object",
+          "properties": {
+            "rows": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "columns": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "SessionMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "keystrokesCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total keystrokes during session"
+        },
+        "mouseClicks": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total mouse clicks during session"
+        },
+        "linesWritten": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Lines of code written"
+        },
+        "linesDeleted": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Lines of code deleted"
+        },
+        "filesOpened": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of files opened"
+        },
+        "commandsRun": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of commands executed"
+        },
+        "gitCommands": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of git commands run"
+        },
+        "testRuns": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of test suite runs"
+        },
+        "buildRuns": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of build commands run"
+        },
+        "focusTime": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Active focus time in seconds"
+        },
+        "idleTime": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Idle time in seconds"
+        },
+        "productivity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Calculated productivity percentage"
+        }
+      }
+    },
+    "Interruption": {
+      "type": "object",
+      "required": ["id", "startTime", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^int-[0-9]+$",
+          "description": "Unique interruption identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["meeting", "call", "break", "emergency", "system", "manual", "other"],
+          "description": "Type of interruption"
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Interruption start timestamp"
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Interruption end timestamp"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Interruption duration in seconds"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Brief description of interruption"
+        },
+        "billable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether interruption time is billable"
+        },
+        "automatic": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether interruption was automatically detected"
+        }
+      }
+    },
+    "SessionNote": {
+      "type": "object",
+      "required": ["id", "content", "timestamp"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^snote-[0-9]+$",
+          "description": "Unique session note identifier"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "Note content"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Note creation timestamp"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["progress", "issue", "solution", "decision", "reminder", "other"],
+          "default": "progress",
+          "description": "Type of note"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "default": "medium",
+          "description": "Note priority level"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "sessionId": "session-1757167488-140545",
+      "taskId": "250",
+      "taskTitle": "JSON Schema v2.0 Documentation",
+      "taskStatus": "in_progress",
+      "user": "cruzalex",
+      "branch": "feature/250-work",
+      "startTime": "2025-09-06T14:04:48.251Z",
+      "lastActivity": "2025-09-06T14:30:00.000Z",
+      "status": "active",
+      "detectionSource": "manual",
+      "workDescription": "Creating comprehensive JSON schemas for v2.0",
+      "filesModified": [
+        "documentation/2.0/schemas/tasks-schema.json",
+        "documentation/2.0/schemas/sessions-schema.json"
+      ],
+      "billing": {
+        "billable": true,
+        "rate": 85.0,
+        "currency": "USD",
+        "client": "FlowForge",
+        "project": "FF-v2.0",
+        "category": "documentation",
+        "invoiced": false,
+        "approved": false
+      },
+      "daemon": {
+        "enabled": true,
+        "processId": 12345,
+        "monitoringInterval": 30,
+        "idleThreshold": 600,
+        "autoSave": true,
+        "autoSaveInterval": 120,
+        "activitySources": ["keyboard", "mouse", "git", "file-system"],
+        "lastHeartbeat": "2025-09-06T14:30:00.000Z"
+      },
+      "environment": {
+        "pwd": "/home/cruzalex/projects/dev/cruzalex/flowforge/FlowForge",
+        "hostname": "CruzAlexAI",
+        "os": "Linux",
+        "shell": "/usr/bin/zsh",
+        "editor": "Claude Code",
+        "nodeVersion": "18.19.0",
+        "gitVersion": "2.43.0",
+        "flowforgeVersion": "2.0.0",
+        "terminalSize": {
+          "rows": 24,
+          "columns": 80
+        }
+      },
+      "metrics": {
+        "keystrokesCount": 1250,
+        "mouseClicks": 45,
+        "linesWritten": 180,
+        "linesDeleted": 12,
+        "filesOpened": 3,
+        "commandsRun": 8,
+        "gitCommands": 2,
+        "testRuns": 0,
+        "buildRuns": 0,
+        "focusTime": 1400,
+        "idleTime": 200,
+        "productivity": 87.5
+      },
+      "notes": [
+        {
+          "id": "snote-1",
+          "content": "Started with tasks schema, very comprehensive",
+          "timestamp": "2025-09-06T14:15:00.000Z",
+          "type": "progress",
+          "priority": "medium"
+        }
+      ]
+    }
+  ]
+}

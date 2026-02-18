@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [],
+  "metadata": {
+    "created": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
+    "lastModified": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
+    "migratedFrom": null,
+    "activeMilestone": null,
+    "v2_2_0_implementation_order": [],
+    "v2_2_0_completed": [],
+    "v2_2_0_phases": {}
+  },
+  "milestones": [],
+  "history": []
+}

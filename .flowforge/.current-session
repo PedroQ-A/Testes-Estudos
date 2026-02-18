@@ -1,0 +1,5 @@
+{
+  "status": "ready",
+  "activeSession": null,
+  "lastActivity": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"
+}

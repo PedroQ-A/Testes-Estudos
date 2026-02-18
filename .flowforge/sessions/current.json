@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "currentSession": null,
+  "lastSession": null,
+  "sessions": [],
+  "metadata": {
+    "created": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
+    "totalSessions": 0,
+    "totalTimeTracked": 0
+  }
+}

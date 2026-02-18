@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowForge Dashboard LLM - PRD</title>
+    <style>
+        @media print {
+            body { margin: 0; }
+            .page-break { page-break-after: always; }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 35px;
+            font-size: 1.8em;
+            border-bottom: 1px solid #ecf0f1;
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+            font-size: 1.4em;
+        }
+        
+        pre {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        @media print {
+            h1 { color: black; }
+            h2 { color: #333; }
+            h3 { color: #555; }
+            th { background-color: #ddd; color: black; }
+        }
+    </style>
+</head>
+<body>
+    <p><h1>Product Requirements Document (PRD)</h1>
+<h1>FlowForge Dashboard com Integração LLM</h1></p><p><strong>Versão:</strong> 1.0.0  
+<strong>Data:</strong> 2025-09-12  
+<strong>Status:</strong> Para Aprovação  
+<strong>Abordagem:</strong> Híbrida (LLM Local + Cloud)</p><p>---</p><p><h2>📋 Sumário Executivo</h2></p><p><h3>Visão do Produto</h3>
+O <strong>FlowForge Dashboard com Integração LLM</strong> é uma plataforma de visualização gerencial que permite aos gestores monitorar em tempo real a produtividade de suas equipes através de conversas naturais com inteligência artificial. O sistema combina o poder de LLMs locais (custo zero) com LLMs cloud (análises complexas) para fornecer insights profundos sobre performance, gargalos e oportunidades de melhoria.</p><p><h3>Problema a Resolver</h3>
+<ul><li><strong>Visibilidade limitada</strong>: Gestores não têm visão consolidada do trabalho da equipe</li></ul>
+<ul><li><strong>Análise manual</strong>: Horas gastas criando relatórios e analisando dados</li></ul>
+<ul><li><strong>Insights perdidos</strong>: Padrões e anomalias não detectados em tempo hábil</li></ul>
+<ul><li><strong>Custo de LLM</strong>: APIs cloud caras para queries simples e repetitivas</li></ul></p><p><h3>Solução Proposta</h3>
+Dashboard interativo com interface conversacional que permite queries em linguagem natural, gerando automaticamente visualizações e insights através de uma arquitetura híbrida que otimiza custos (70% de redução) mantendo alta qualidade de resposta.</p><p><h3>Benefícios Principais</h3>
+<ul><li><strong>Economia de 60-70%</strong> nos custos de LLM através de processamento híbrido</li></ul>
+<ul><li><strong>Respostas em <500ms</strong> para queries locais, <3s para cloud</li></ul>
+<ul><li><strong>Interface conversacional</strong> em português com suporte a voz</li></ul>
+<ul><li><strong>Visualizações automáticas</strong> baseadas no contexto da pergunta</li></ul>
+<ul><li><strong>Insights proativos</strong> com detecção de anomalias e previsões</li></ul></p><p>---</p><p><h2>🎯 Objetivos e Metas</h2></p><p><h3>Objetivos Primários</h3>
+1. <strong>Visibilidade Total</strong>: Dashboard unificado com métricas em tempo real
+2. <strong>Análise por IA</strong>: Queries em linguagem natural gerando insights automáticos
+3. <strong>Redução de Custos</strong>: Minimizar gastos com APIs de LLM através de arquitetura híbrida
+4. <strong>Produtividade</strong>: Eliminar geração manual de relatórios (economia de 10h/semana)
+5. <strong>Decisões Data-Driven</strong>: Insights acionáveis baseados em dados reais</p><p><h3>Metas SMART</h3>
+<ul><li><strong>Q1 2025</strong>: MVP funcional com 5 tipos de queries pré-definidas</li></ul>
+<ul><li><strong>Q2 2025</strong>: Integração híbrida completa (local + cloud) com 60% economia</li></ul>
+<ul><li><strong>Q3 2025</strong>: Fine-tuning com dados reais, 90% accuracy em queries específicas</li></ul>
+<ul><li><strong>Q4 2025</strong>: 100% adoção pela equipe, ROI positivo demonstrado</li></ul></p><p><h3>KPIs de Sucesso</h3>
+| Métrica | Meta | Medição |
+|---------|------|---------|
+| <strong>Tempo de Resposta</strong> | <500ms local, <3s cloud | p95 latency |
+| <strong>Redução de Custos</strong> | 60-70% vs cloud-only | Custo mensal de API |
+| <strong>Satisfação do Usuário</strong> | >4.5/5 | NPS trimestral |
+| <strong>Queries Processadas</strong> | >1000/dia | Analytics dashboard |
+| <strong>Uptime</strong> | 99.9% | Monitoring tools |
+| <strong>Adoption Rate</strong> | 100% em 3 meses | Active users |</p><p>---</p><p><h2>👥 Stakeholders</h2></p><p><h3>Stakeholder Map</h3>
+<pre><code>
+┌─────────────────────────────────────────────────────┐
+│                 STAKEHOLDERS MAP                     │
+├───────────────┬─────────────┬───────────────────────┤
+│   Grupo       │   Papel     │   Interesse          │
+├───────────────┼─────────────┼───────────────────────┤
+│ Sponsors      │ C-Level     │ ROI, Produtividade   │
+│ Users         │ Managers    │ Insights, Facilidade │
+│ Developers    │ Time Dev    │ Tracking, Fair Pay   │
+│ Operations    │ DevOps      │ Estabilidade, Custos │
+│ Security      │ InfoSec     │ Compliance, Privacy  │
+└───────────────┴─────────────┴───────────────────────┘
+</code></pre></p><p><h3>Comunicação</h3>
+<ul><li><strong>Weekly Status</strong>: Toda segunda-feira via Slack</li></ul>
+<ul><li><strong>Sprint Reviews</strong>: Bi-semanais com demos</li></ul>
+<ul><li><strong>Executive Reports</strong>: Mensais com KPIs</li></ul>
+<ul><li><strong>User Feedback</strong>: Canal dedicado no Discord</li></ul></p><p>---</p><p><h2>🏗️ Arquitetura Técnica</h2></p><p><h3>Visão Geral - Arquitetura Híbrida</h3>
+<pre><code>
+┌─────────────────────────────────────────────────────┐
+│              FlowForge Dashboard                     │
+│                Hybrid Architecture                   │
+├─────────────────────────────────────────────────────┤
+│                                                      │
+│  ┌──────────┐     ┌──────────┐     ┌──────────┐   │
+│  │  Vue 3   │────▶│ Node.js  │────▶│   LLM    │   │
+│  │ Frontend │     │ Backend  │     │ Gateway  │   │
+│  └──────────┘     └──────────┘     └──────────┘   │
+│       ▲                ▲                 ▲          │
+│       │                │                 │          │
+│       ▼                ▼                 ▼          │
+│  ┌──────────┐     ┌──────────┐     ┌──────────┐   │
+│  │WebSocket │     │PostgreSQL│     │  Ollama  │   │
+│  │Real-time │     │ Database │     │  (Local) │   │
+│  └──────────┘     └──────────┘     └──────────┘   │
+│                        ▲                 ▲          │
+│                        │                 │          │
+│                        ▼                 ▼          │
+│                   ┌──────────┐     ┌──────────┐   │
+│                   │  Redis   │     │Cloud LLM │   │
+│                   │  Cache   │     │ (GPT-4)  │   │
+│                   └──────────┘     └──────────┘   │
+└─────────────────────────────────────────────────────┘
+</code></pre></p><p><h3>Stack Tecnológico</h3></p><p>#### Frontend
+<ul><li><strong>Framework</strong>: Vue 3.5 + TypeScript 5.6</li></ul>
+<ul><li><strong>Build Tool</strong>: Vite 5.4</li></ul>
+<ul><li><strong>UI Library</strong>: PrimeVue 4.0</li></ul>
+<ul><li><strong>Charts</strong>: Chart.js 4.4 + Apache ECharts 5.5</li></ul>
+<ul><li><strong>State</strong>: Pinia 2.2</li></ul>
+<ul><li><strong>Real-time</strong>: Socket.io-client 4.8</li></ul></p><p>#### Backend
+<ul><li><strong>Runtime</strong>: Node.js 22 LTS</li></ul>
+<ul><li><strong>Framework</strong>: Express 4.21 + TypeScript</li></ul>
+<ul><li><strong>Database</strong>: PostgreSQL 16 + Prisma 6.0</li></ul>
+<ul><li><strong>Cache</strong>: Redis 7.4</li></ul>
+<ul><li><strong>Queue</strong>: Bull 4.16</li></ul>
+<ul><li><strong>Auth</strong>: JWT + Passport.js</li></ul></p><p>#### LLM Integration
+<ul><li><strong>Local</strong>: Ollama 0.5 (Llama 3.2, Mistral)</li></ul>
+<ul><li><strong>Cloud</strong>: OpenAI GPT-4, Claude 3, Gemini</li></ul>
+<ul><li><strong>Orchestration</strong>: LangChain.js 0.3</li></ul>
+<ul><li><strong>Vector Store</strong>: ChromaDB</li></ul>
+<ul><li><strong>Embeddings</strong>: text-embedding-3-small</li></ul></p><p><h3>Componentes Principais</h3></p><p>1. <strong>Chat Interface</strong>: Componente conversacional com histórico contextual
+2. <strong>LLM Gateway</strong>: Router inteligente para seleção local vs cloud
+3. <strong>Query Processor</strong>: Parser de linguagem natural e gerador de visualizações
+4. <strong>Cache System</strong>: Multi-camada (memory, Redis, CDN)
+5. <strong>Real-time Engine</strong>: WebSocket para atualizações ao vivo
+6. <strong>Analytics Engine</strong>: Agregações e cálculos de métricas</p><p>---</p><p><h2>💬 Funcionalidades com LLM</h2></p><p><h3>Interface Conversacional</h3></p><p>#### Exemplos de Interação
+<pre><code>
+User: "Quantas horas trabalhamos esta semana?"
+LLM: [Gráfico de barras] + "48 horas totais, média de 9.6h/dia"</p><p>User: "Compare produtividade entre João e Maria"
+LLM: [Gráfico comparativo] + "João: 12 tickets, Maria: 8 tickets"</p><p>User: "Identifique gargalos no desenvolvimento"
+LLM: [Timeline] + "3 gargalos: code review (2x tempo), 
+      5 tickets parados, deploy manual (15% do tempo)"</p><p>User: "Preveja quando terminaremos o sprint"
+LLM: [Projeção] + "85% chance de conclusão até sexta-feira"
+</code></pre></p><p><h3>Capacidades do Sistema</h3></p><p>#### Processamento Local (Ollama - Custo Zero)
+<ul><li>Queries simples e diretas</li></ul>
+<ul><li>Agregações básicas</li></ul>
+<ul><li>Filtros por data/pessoa</li></ul>
+<ul><li>Visualizações padrão</li></ul>
+<ul><li>Tempo de resposta: <500ms</li></ul></p><p>#### Processamento Cloud (GPT-4/Claude - Premium)
+<ul><li>Análises complexas multi-dimensionais</li></ul>
+<ul><li>Previsões e projeções</li></ul>
+<ul><li>Detecção de anomalias</li></ul>
+<ul><li>Recomendações estratégicas</li></ul>
+<ul><li>Tempo de resposta: 1-3s</li></ul></p><p>#### Processamento Híbrido (Otimizado)
+<ul><li>Local pré-processa e extrai contexto</li></ul>
+<ul><li>Cloud realiza análise profunda</li></ul>
+<ul><li>Local pós-processa e formata</li></ul>
+<ul><li>Melhor custo-benefício</li></ul></p><p><h3>Features Especiais</h3></p><p>1. <strong>Voice-to-Query</strong>: Fale com o dashboard em português
+2. <strong>Auto-Visualização</strong>: IA escolhe melhor tipo de gráfico
+3. <strong>Insights Proativos</strong>: Alertas automáticos de anomalias
+4. <strong>Export Inteligente</strong>: Relatórios formatados automaticamente
+5. <strong>Multi-LLM Support</strong>: Fallback entre providers
+6. <strong>Cache Semântico</strong>: Queries similares usam cache</p><p>---</p><p><h2>🔌 Especificações de API</h2></p><p><h3>RESTful Endpoints</h3></p><p><pre><code>yaml
+Dashboard API:
+  GET /api/dashboard/metrics
+    - Description: Métricas gerais do dashboard
+    - Auth: Bearer token
+    - Response: MetricsResponse
+  
+  GET /api/dashboard/sessions
+    - Description: Sessões de trabalho ativas
+    - Auth: Bearer token
+    - Response: SessionsResponse</p><p>LLM Gateway:
+  POST /api/llm/query
+    - Description: Processar query em linguagem natural
+    - Body: { query: string, context?: object }
+    - Response: { answer: string, visualization?: Chart }
+  
+  GET /api/llm/suggestions
+    - Description: Sugestões contextuais
+    - Response: string[]</p><p>WebSocket Events:
+  connect: Estabelecer conexão
+  metrics.update: Atualização de métricas
+  session.start: Nova sessão iniciada
+  session.end: Sessão finalizada
+  llm.response: Resposta do LLM
+</code></pre></p><p><h3>GraphQL Schema</h3></p><p><pre><code>graphql
+type Query {
+  dashboard: Dashboard!
+  sessions(filter: SessionFilter): [Session!]!
+  metrics(range: DateRange!): Metrics!
+  llmQuery(input: String!): LLMResponse!
+}</p><p>type Mutation {
+  startSession(taskId: ID!): Session!
+  endSession(sessionId: ID!): Session!
+  sendLLMQuery(query: String!): LLMResponse!
+}</p><p>type Subscription {
+  metricsUpdate: Metrics!
+  sessionUpdate: Session!
+  llmStreaming(queryId: ID!): LLMStreamChunk!
+}
+</code></pre></p><p>---</p><p><h2>🗄️ Modelagem de Dados</h2></p><p><h3>Esquema Principal (PostgreSQL)</h3></p><p><pre><code>sql
+-- Tabela de Queries LLM
+CREATE TABLE llm_queries (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id),
+    query_text TEXT NOT NULL,
+    query_embedding vector(1536),
+    response_text TEXT,
+    visualization_spec JSONB,
+    provider VARCHAR(50), -- 'local', 'openai', 'anthropic'
+    model_used VARCHAR(100),
+    tokens_used INTEGER,
+    cost_cents INTEGER,
+    response_time_ms INTEGER,
+    cache_hit BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);</p><p>-- Tabela de Métricas
+CREATE TABLE dashboard_metrics (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id),
+    metric_type VARCHAR(50),
+    metric_value NUMERIC,
+    metadata JSONB,
+    calculated_at TIMESTAMPTZ DEFAULT NOW()
+);</p><p>-- Índices para Performance
+CREATE INDEX idx_llm_queries_user_created 
+    ON llm_queries(user_id, created_at DESC);
+CREATE INDEX idx_llm_queries_embedding 
+    ON llm_queries USING ivfflat (query_embedding vector_cosine_ops);
+CREATE INDEX idx_metrics_project_type 
+    ON dashboard_metrics(project_id, metric_type);
+</code></pre></p><p><h3>Cache Structure (Redis)</h3></p><p><pre><code>javascript
+// Cache Keys Pattern
+{
+  "dashboard:metrics:{projectId}": "2h TTL",
+  "llm:query:{hash}": "24h TTL",
+  "session:active:{userId}": "30min TTL",
+  "suggestions:{context}": "1h TTL"
+}
+</code></pre></p><p><h3>Vector Store (ChromaDB)</h3></p><p><pre><code>python
+<h1>Collections</h1>
+collections = {
+    "queries": {  # Historical queries for similarity
+        "embedding_function": "text-embedding-3-small",
+        "metadata": ["user_id", "timestamp", "cost"]
+    },
+    "documentation": {  # FlowForge docs for RAG
+        "embedding_function": "text-embedding-3-small",
+        "metadata": ["type", "version", "source"]
+    }
+}
+</code></pre></p><p>---</p><p><h2>📊 Plano de Implementação</h2></p><p><h3>Roadmap de 3 Meses</h3></p><p><pre><code>mermaid
+gantt
+    title FlowForge Dashboard LLM - Roadmap
+    dateFormat YYYY-MM-DD
+    
+    section Mês 1 - MVP
+    Setup Infraestrutura        :2025-01-01, 3d
+    Frontend Base               :3d
+    Backend Core                :4d
+    LLM Integration Básica      :4d
+    Testes e Ajustes           :2d
+    Deploy Beta                :1d
+    
+    section Mês 2 - Expansão
+    RAG Implementation         :7d
+    Cache Semântico           :5d
+    Ollama Local Setup        :5d
+    Voice Interface           :3d
+    
+    section Mês 3 - Enterprise
+    Fine-tuning Prep          :5d
+    Model Training            :7d
+    Advanced Analytics        :8d
+    Production Deploy         :2d
+</code></pre></p><p><h3>Milestones e Tarefas</h3></p><p>#### Milestone 1: MVP (2 semanas)
+<ul><li>[ ] TASK-001: Setup Vue 3 + TypeScript (0.2h)</li></ul>
+<ul><li>[ ] TASK-002: Configurar PrimeVue e tema (0.2h)</li></ul>
+<ul><li>[ ] TASK-003: Backend Express scaffolding (0.2h)</li></ul>
+<ul><li>[ ] TASK-004: PostgreSQL + Prisma setup (0.3h)</li></ul>
+<ul><li>[ ] TASK-005: Integração GPT-4 básica (0.3h)</li></ul>
+<ul><li>[ ] TASK-006: Chat interface simples (0.3h)</li></ul>
+<ul><li>[ ] TASK-007: 5 queries pré-definidas (0.3h)</li></ul>
+<ul><li>[ ] TASK-008: Deploy em staging (0.2h)</li></ul></p><p>#### Milestone 2: Híbrido (1 mês)
+<ul><li>[ ] TASK-009: Instalar Ollama server (0.3h)</li></ul>
+<ul><li>[ ] TASK-010: Router inteligente LLM (0.3h)</li></ul>
+<ul><li>[ ] TASK-011: ChromaDB vector store (0.3h)</li></ul>
+<ul><li>[ ] TASK-012: RAG pipeline (0.3h)</li></ul>
+<ul><li>[ ] TASK-013: Cache semântico Redis (0.2h)</li></ul>
+<ul><li>[ ] TASK-014: Voice-to-text PT-BR (0.3h)</li></ul>
+<ul><li>[ ] TASK-015: Visualizações dinâmicas (0.3h)</li></ul>
+<ul><li>[ ] TASK-016: Fallback system (0.2h)</li></ul></p><p>#### Milestone 3: Production (2-3 meses)
+<ul><li>[ ] TASK-017: Dataset preparation (0.3h)</li></ul>
+<ul><li>[ ] TASK-018: Fine-tuning GPT-3.5 (0.3h)</li></ul>
+<ul><li>[ ] TASK-019: A/B testing framework (0.3h)</li></ul>
+<ul><li>[ ] TASK-020: Advanced analytics (0.3h)</li></ul>
+<ul><li>[ ] TASK-021: Anomaly detection (0.3h)</li></ul>
+<ul><li>[ ] TASK-022: Cost optimization (0.2h)</li></ul>
+<ul><li>[ ] TASK-023: Security hardening (0.3h)</li></ul>
+<ul><li>[ ] TASK-024: Production deploy (0.2h)</li></ul></p><p>---</p><p><h2>💰 Análise de Custos</h2></p><p><h3>Custos de Desenvolvimento</h3>
+| Item | Horas | Custo/Hora | Total |
+|------|-------|------------|-------|
+| <strong>Frontend</strong> | 40h | $150 | $6,000 |
+| <strong>Backend</strong> | 60h | $150 | $9,000 |
+| <strong>LLM Integration</strong> | 40h | $200 | $8,000 |
+| <strong>Testing</strong> | 20h | $120 | $2,400 |
+| <strong>DevOps</strong> | 20h | $180 | $3,600 |
+| <strong>Total</strong> | 180h | - | <strong>$29,000</strong> |</p><p><h3>Custos Operacionais (Mensal)</h3>
+| Componente | Uso Baixo | Uso Médio | Uso Alto |
+|------------|-----------|-----------|----------|
+| <strong>Cloud LLM (30%)</strong> | $30 | $100 | $300 |
+| <strong>Infraestrutura</strong> | $100 | $200 | $500 |
+| <strong>Ollama Server</strong> | $50 | $50 | $100 |
+| <strong>Total Mensal</strong> | <strong>$180</strong> | <strong>$350</strong> | <strong>$900</strong> |</p><p><h3>ROI Esperado</h3>
+<ul><li><strong>Economia em Relatórios</strong>: 10h/semana × $100/h = $4,000/mês</li></ul>
+<ul><li><strong>Redução de Custos LLM</strong>: 60-70% vs cloud-only = $200-500/mês</li></ul>
+<ul><li><strong>Aumento de Produtividade</strong>: 20% = ~$8,000/mês valor agregado</li></ul>
+<ul><li><strong>Payback</strong>: 2-3 meses</li></ul></p><p>---</p><p><h2>🔒 Segurança e Compliance</h2></p><p><h3>Medidas de Segurança</h3>
+1. <strong>Autenticação</strong>: JWT com refresh tokens, MFA opcional
+2. <strong>Autorização</strong>: RBAC com políticas granulares
+3. <strong>Criptografia</strong>: TLS 1.3 em trânsito, AES-256 em repouso
+4. <strong>Sanitização</strong>: Input validation, output encoding
+5. <strong>Rate Limiting</strong>: Por endpoint e por usuário
+6. <strong>Audit Trail</strong>: Log completo de todas ações</p><p><h3>Privacidade de Dados</h3>
+<ul><li><strong>LGPD/GDPR Compliance</strong>: Direito ao esquecimento, portabilidade</li></ul>
+<ul><li><strong>Data Minimization</strong>: Apenas dados necessários</li></ul>
+<ul><li><strong>Anonymization</strong>: PII removido antes do LLM</li></ul>
+<ul><li><strong>Local Processing</strong>: Dados sensíveis nunca saem do servidor</li></ul></p><p><h3>LLM Security</h3>
+<ul><li><strong>Prompt Injection Prevention</strong>: Input sanitization</li></ul>
+<ul><li><strong>Token Limits</strong>: Máximo de tokens por request</li></ul>
+<ul><li><strong>Cost Thresholds</strong>: Alertas de gastos anormais</li></ul>
+<ul><li><strong>Output Validation</strong>: Verificação de respostas</li></ul></p><p>---</p><p><h2>⚠️ Riscos e Mitigações</h2></p><p><h3>Riscos Técnicos</h3>
+| Risco | Probabilidade | Impacto | Mitigação |
+|-------|---------------|---------|-----------|
+| <strong>Latência do LLM</strong> | Média | Alto | Cache agressivo, timeouts |
+| <strong>Custos de API</strong> | Alta | Médio | Híbrido local/cloud |
+| <strong>Falha do Ollama</strong> | Baixa | Médio | Fallback para cloud |
+| <strong>Volume de dados</strong> | Média | Médio | Paginação, lazy loading |</p><p><h3>Riscos de Negócio</h3>
+| Risco | Probabilidade | Impacto | Mitigação |
+|-------|---------------|---------|-----------|
+| <strong>Baixa adoção</strong> | Média | Alto | Training, UX simples |
+| <strong>ROI não atingido</strong> | Baixa | Alto | Métricas claras, iteração |
+| <strong>Compliance issues</strong> | Baixa | Alto | Audit regular, LGPD |</p><p>---</p><p><h2>📈 Métricas de Sucesso</h2></p><p><h3>Technical Metrics</h3>
+<ul><li><strong>Response Time</strong>: p95 < 500ms (local), < 3s (cloud)</li></ul>
+<ul><li><strong>Availability</strong>: 99.9% uptime</li></ul>
+<ul><li><strong>Error Rate</strong>: < 0.1%</li></ul>
+<ul><li><strong>Cache Hit Ratio</strong>: > 85%</li></ul>
+<ul><li><strong>Query Success Rate</strong>: > 95%</li></ul></p><p><h3>Business Metrics</h3>
+<ul><li><strong>User Adoption</strong>: 100% em 3 meses</li></ul>
+<ul><li><strong>Time Saved</strong>: 10h/semana em relatórios</li></ul>
+<ul><li><strong>Cost Reduction</strong>: 60% em APIs LLM</li></ul>
+<ul><li><strong>User Satisfaction</strong>: NPS > 50</li></ul>
+<ul><li><strong>ROI</strong>: Positivo em 3 meses</li></ul></p><p><h3>LLM Specific Metrics</h3>
+<ul><li><strong>Query Accuracy</strong>: > 90%</li></ul>
+<ul><li><strong>Hallucination Rate</strong>: < 5%</li></ul>
+<ul><li><strong>Local Processing</strong>: > 70% queries</li></ul>
+<ul><li><strong>Average Cost/Query</strong>: < $0.01</li></ul>
+<ul><li><strong>Context Relevance</strong>: > 85%</li></ul></p><p>---</p><p><h2>🚀 Próximos Passos</h2></p><p><h3>Imediato (Semana 1)</h3>
+1. ✅ Aprovar PRD e arquitetura
+2. 🔄 Criar issues no GitHub (#468-#494)
+3. 📋 Setup ambiente de desenvolvimento
+4. 🏗️ Iniciar implementação do MVP</p><p><h3>Curto Prazo (Mês 1)</h3>
+1. 🎯 MVP funcional com queries básicas
+2. 🧪 Testes com usuários beta
+3. 📊 Coletar métricas iniciais
+4. 🔄 Iteração baseada em feedback</p><p><h3>Médio Prazo (Meses 2-3)</h3>
+1. 🤖 Implementar processamento híbrido
+2. 🎤 Adicionar interface de voz
+3. 📈 Fine-tuning com dados reais
+4. 🚀 Deploy em produção</p><p>---</p><p><h2>📞 Contatos</h2></p><p><h3>Time Core</h3>
+<ul><li><strong>Product Owner</strong>: [Alex Cruz]</li></ul>
+<ul><li><strong>Tech Lead</strong>: [TBD]</li></ul>
+<ul><li><strong>LLM Specialist</strong>: [TBD]</li></ul>
+<ul><li><strong>DevOps Lead</strong>: [TBD]</li></ul></p><p><h3>Canais de Comunicação</h3>
+<ul><li><strong>Slack</strong>: #flowforge-dashboard</li></ul>
+<ul><li><strong>GitHub</strong>: github.com/JustCode-CruzAlex/FlowForge</li></ul>
+<ul><li><strong>Documentation</strong>: /documentation/2.0/dashboard/</li></ul></p><p>---</p><p><h2>📎 Anexos</h2></p><p><h3>Documentos Relacionados</h3>
+1. [Arquitetura Técnica Detalhada](./architecture/technical_spec.md)
+2. [API Specification](./api/FLOWFORGE_DASHBOARD_API_SPEC.md)
+3. [Database Schema](./database/schema/)
+4. [Test Plan](./testing/test_plan.md)
+5. [Security Assessment](./security/assessment.md)</p><p><h3>Referências</h3>
+<ul><li>[FlowForge Documentation](https://flowforge.io/docs)</li></ul>
+<ul><li>[Ollama Documentation](https://ollama.ai/docs)</li></ul>
+<ul><li>[LangChain.js Guide](https://js.langchain.com)</li></ul>
+<ul><li>[Vue 3 Best Practices](https://vuejs.org/guide)</li></ul></p><p>---</p><p><strong>Documento gerado pelo FlowForge Maestro System</strong>  
+<strong>Versão</strong>: 1.0.0  
+<strong>Data</strong>: 2025-09-12  
+<strong>Status</strong>: Aguardando Aprovação</p><p>---</p><p><h2>🎯 Call to Action</h2></p><p><strong>Para aprovar este PRD e iniciar o desenvolvimento:</strong></p><p><pre><code>bash
+<h1>Aprovar e criar issues</h1>
+/flowforge:session:start dashboard-llm</p><p><h1>Ou revisar alterações necessárias</h1>
+<h1>Informe quais ajustes são necessários</h1>
+</code></pre></p><p>Este PRD foi criado através da orquestração de múltiplos agentes especialistas FlowForge, garantindo completude técnica e alinhamento com os objetivos de negócio.</p>
+    <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ecf0f1; text-align: center; color: #7f8c8d;">
+        <p>FlowForge Dashboard LLM Integration - Product Requirements Document</p>
+        <p>Generated: 2025-09-12 | Version: 1.0.0</p>
+    </div>
+</body>
+</html>
