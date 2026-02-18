@@ -1,6 +1,6 @@
 /// <reference types="cypress"/>
 
-import { generate } from 'cpf'
+import { generate as generateCpf } from 'gerador-validador-cpf'
 
 describe('Lançamento de protocolo', () => {
 
@@ -35,7 +35,7 @@ describe('Lançamento de protocolo', () => {
     });
 
     it('Validação de protocolo criado', () => {
-        const cpfValido = generate()
+        const cpfValido = generateCpf({ format: true })
 
         cy.get('.majorBtn').click()
         cy.get('.v-input__slot').type('teste de cooperativa')
